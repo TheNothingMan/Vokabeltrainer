@@ -61,7 +61,9 @@
 					}
 				?>
 			</form>
-			<button onclick="start()">Beginnen</button>
+			<div class='wrapper'>
+				<button onclick="start()">Beginnen</button>
+			</div>
 		</div>
 	</body>
 </html>

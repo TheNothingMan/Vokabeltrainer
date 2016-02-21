@@ -42,16 +42,16 @@
 				console.log(data);
 				if (data == "end"){
 					//TODO: Status screen and link to homepage here
-					window.location.href='results.php?right='+right+'&wrong='+wrong+'&mastered='+mastered;
-					$("#foreignLanguage").html("<a href='index.php' target='_top'>Fertig. Zurück zum Start. Richtig: "+right+", falsch: "+wrong+"</a>");
+					window.location.href='results.php?right='+right+'&wrong='+wrong+'&mastered='+mastered;	
 				}else{
 					var voc = JSON.parse(data);
 					$("#index").text(voc.learn_index+" ");
 					$("#step").text(voc.step);
-					$("#ownLanguage").animate({width:'0', opacity:'0', minWidth:'0'},"fast", function(){
-						$("#ownLanguage").css({"visibility": "collapse", "width":"0"});
-						$("#ownLanguage").text(voc.own_language);
-					});
+					$("#ownLanguage").addClass("hidden");
+					//$("#ownLanguage").animate({width:'0', opacity:'0', minWidth:'0'},"fast", function(){
+						//$("#ownLanguage").css({"visibility": "collapse", "width":"0"});
+						//$("#ownLanguage").text(voc.own_language);
+					//});
 					//TODO: Make this somewhat more sophisticated
 					$("#foreignLanguage").animate({opacity:'0'}, 100, function(){
 						$("#foreignLanguage").text(voc.foreign_language);
@@ -68,15 +68,15 @@
 		function check(button) {
 			if (!checked){
 				checked = true;
-				$("#ownLanguage").css({"visibility": "visible", "width":"0", "min-width":"200"});
-				$("#ownLanguage").animate({width:'30%', opacity:'1'},"fast");
+				//$("#ownLanguage").css({"visibility": "visible", "width":"0", "min-width":"200"});
+				//$("#ownLanguage").animate({width:'30%', opacity:'1'},"fast");
+				$("#ownLanguage").removeClass("hidden");
 				//TODO: Make this somewhat more sophisticated
 				$("#right").prop("disabled", false);
 				$("#wrong").prop("disabled", false);
 			}
 		}
 		$(document).ready(function(){
-			$("#ownLanguage").css("visibility", "collapse");
 			$(window).keypress(function(e){
 			    switch (e.keyCode){
 			    	case 39:
@@ -113,7 +113,7 @@
 				?>			
 				</span>
 			</div>
-			<div class='card own' id="ownLanguage">
+			<div class='card own hidden' id="ownLanguage">
 				<span>
 				<?php 
 					echo $voc->getOwnLang();

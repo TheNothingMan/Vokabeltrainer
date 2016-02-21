@@ -13,8 +13,13 @@
 	?>
 	</span>
 </div>
-<ul id="menu">
-	<li><a href="input_vocables.php">Eingeben</a></li>
-	<li><a href="learn.php">Lernen</a></li>
-	<li><a href="new_lesson.php">Lektion erstellen</a></li>
-</ul>
+<div id="menu">
+<a href="input_vocables.php">Eingeben</a>
+<a href="learn.php">Lernen</a>
+<a href="new_lesson.php">Lektion erstellen</a>
+</div>
+<!-- <ul id="menu"> -->
+<!-- 	<li><a href="input_vocables.php">Eingeben</a></li> -->
+<!-- 	<li><a href="learn.php">Lernen</a></li> -->
+<!-- 	<li><a href="new_lesson.php">Lektion erstellen</a></li> -->
+<!-- </ul> -->
