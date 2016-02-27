@@ -1,28 +1,95 @@
 @CHARSET "utf-8";
-@media all and (max-width:800px){
-	body{
+
+iframe html{
+	height: 100%;
+}
+
+body{
+	margin: 1vh;
+	height: 98vh;
+}
+
+iframe body{
+	margin: 1vmin;
+	height: 92vmin;
+	padding: 3vmin;
+}
+
+@media all and (min-resolution:190dpi){
+	body, .page{
+		font-family: sans-serif;
+		font-size:2.2vmax;
+	}
+	
+	input[type=button], input[type=submit], button{
+		font-size:2.2vmax;
+		width: auto;
+	}
+	
+		#login{
+		font-size: 2.6vmax;
+	}
+	
+	div#menu a{
+		font-size: 3.2vmax;
+	}
+}
+
+@media all and (max-width:500px){
+	body, .page{
+		font-family: sans-serif;
+		font-size:3.2vmax;
+	}
+	
+	input[type=button], input[type=submit], button{
+		font-size:3.2vmax;
+		width: auto;
+		padding: 2vmin;
+	}
+	
+	#login{
+		font-size: 2.2vmax;
+	}
+	
+	div#menu a{
+		font-size: 2.8vmax;
+	}
+}
+
+@media all and (min-width:801px){
+	body, .page{
 		font-family: sans-serif;
 		font-size:1.2vmax;
 	}
 	
-}
-@media all and (min-width:801px){
-	body{
-		font-family: sans-serif;
+	input[type=button], input[type=submit], button{
 		font-size:1.2vmax;
+		width: 20%;
+	}
+	
+	#login{
+		font-size: 0.9vmax;
+	}
+	
+	div#menu a{
+		font-size: 1.5vmax;
 	}
 }
 #page {
-	font-size: 1.2vmax;
+	/*font-size: 1.2vmax;*/
 }
 
+h1{
+	margin-top: 0;
+	padding-top: 2vh;
+}
 
 .page{
-	padding: 10px;
+	padding: 2vmin;
 	/*TODO: Platforms? - Should be solved with relative layouts*/
 	width: 90%;
 	margin: auto;
-	height:90%;
+	height:95vh;
 	display: flex;
 	flex-direction: column;
 }
@@ -33,22 +100,24 @@
 	background-color: lavender;
 	border-style: solid;
 	border-color: gray;
-	border-width: 2px 2px 4px 2px;
+	border-width: 0.5vmin 0.5vmin 1vmin 0.5vmin;
 }
 
 .content{
 	background-color: #e9e9fb;
-	padding: 10px;
+	padding: 1.5vmax;
 	margin: 0;
 	border-style: solid;
 	border-color: gray;
-	border-width: 0px 2px 2px 2px;
+	border-width: 0 0.5vmin 0.5vmin 0.5vmin;
 	flex-grow: 100;
 }
 
 .wrapper{
-	padding: 0;
+	padding: 1vmin;
 	text-align: center;
+	/*Chrome needs this*/
+	height: 75vh;
 }
 
 iframe.content{
@@ -63,23 +132,25 @@ div#menu{
 	display: flex;
 	flex-flow: row nowrap;
 	justify-content: center;
-	margin: 4px 0;
+	margin: 2vmin 0;
 	width: 100%;
 }
 
 div#menu a{
-	font-size: 1em;
     background-color: navy;
     color: white;
-    padding: 8px 2vh;
-    margin-bottom: 4px;
+    padding: 2vh 2vh;
+    margin-bottom: 2vh;
     text-decoration: none;
-    border-radius: 2px;
+    border-radius: 1vmin;
     display: inline-block;
     width: 20vw;
     font-family: sans-serif;
-    font-size: 1.5vmax;
-    margin: 5px;
+    margin: 2vmin;
+}
+
+div#menu a:hover{
+	background-color: RoyalBlue;
 }
 
 ul#menu {
@@ -116,40 +187,54 @@ ul#menu li a:hover {
 
 #login{
 	margin: 0;
-	margin-right: 5px;
+	margin-right: 1vw;
 	text-align: right;
 	display: inline-block;
 	float: right;
-	font-size: 0.9vmax;
 }
 
-div#title{
+div.title{
 	text-align: left;
 }
 
-a#title{
+a.title{
 	font-size: 2.5vmax;
-	font-weight: b;
+	font-weight: bold;
 	color: royalBlue;
-	margin-left: 5px;
+	margin-left: 1vw;
 	text-decoration: none;
+}
+
+input [type=text], input [type=email], input[type=password]{
+	min-height: 5vmin;	
 }
 
 input[type=button], input[type=submit], button{
 	color: RoyalBlue;
-	margin: 4px 0px;
-	padding: 2px 0px; 
+	margin: 2vmin 0;
+	padding: 0.5vmin 0; 
 	background-color: Snow;
-	border-radius: 2px; 
+	border-radius: 1vmin; 
 	cursor: pointer;
-	width: 20%;
-	border: 2px solid;
-	font-size: 1.2vmax;
+	border: 1vmin solid;
+	height: auto;
+	transition: all 0.2s;
+	/*font-size: 1.2vmax;*/
+}
+
+input[type=button]:active, input[type=submit]:active, button:active{
+	color: Snow;
+	background-color: RoyalBlue;
+	border-color: RoyalBlue;
+}
+
+input[type=button]:hover, input[type=submit]:hover, button:HOVER{
+	box-shadow: 1px 1px 10px rgba(20,0,20,0.3);
 }
 
 input[type='checkbox']{
-	width: 1vmin;
-	height: 1vmin;
+	width: 3vmin;
+	height: 3vmin;
 	margin: 1vmin;
 }
 
@@ -166,26 +251,27 @@ input[type=text]{
 	display: inline-block;
 	width: 45%;
 	margin: 0;
-	padding: 10px; 	
+	padding: 2vmin; 	
 }
 
 .voc_input textarea{
 	width: 100%;
-	height: 80px;
+	height: 30vh;
+	font-family: Arial;
 }
 
 select#lesson{
-	width:150;
+	width:20vw;
 	text-align: right
 }
 
 [class*=result]{
 	text-align: center;
-	padding: 20px 30px;
+	padding: 5vmin 7vmin;
 	width: 40%;
 	margin:auto;
-	border: 4px solid;
-	border-radius: 4px;
+	border: 2vmin solid;
+	border-radius: 2vmin;
 }
 
 .result-negative{
@@ -196,6 +282,13 @@ select#lesson{
 	border-color: MediumTurquoise;
 }
 
+div#options{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 98vh;
+}
+
+/*Learning specific media queries*/
 @media all and (orientation: landscape){
 	.card_wrapper{
 		display: flex;
@@ -204,7 +297,7 @@ select#lesson{
 	}
 	
 	.card{
-		border: 2px solid grey;
+		border: 0.5vmin solid grey;
 		display: flex;
 		height: 50vh;
 		margin: auto;
@@ -218,6 +311,27 @@ select#lesson{
 		font-size: 2.2vmax;
 	}
 	
+	.learn{
+		font-size: 1.2vmax;
+	}
+	
+	.learn#check, .learn#wrong{
+		position: relative;
+		left: 10.5vw;
+		order: 3;
+	}
+
+	.learn#wrong{
+		order: 2;
+	}
+	
+	.learn#right{
+		order: 1;
+	}
+	
+	.button-wrapper::AFTER {
+		order: 1;
+	}
 }
 
 @media all and (orientation: portrait){
@@ -228,7 +342,7 @@ select#lesson{
 	}
 	
 	.card{
-		border: 2px solid grey;
+		border: 0.5vmin solid grey;
 		display: flex;
 		height: 30vh;
 		margin: auto;
@@ -239,8 +353,32 @@ select#lesson{
 		box-shadow: 0 3px 10px rgba(20,0,20,0.6);
 		min-width: 200px;
 		font-family: sans-serif;
-		font-size: 2.2vmax;
+		font-size: 3.2vmax;
 	}
+	
+	.learn{
+		font-size: 2.8vmax;
+		width: 28vw;
+	}
+	
+	.learn#check, .learn#wrong{
+		order: 2;
+	}
+
+	.learn#wrong{
+		border-color: rgb(242, 109, 0);
+		order: 1;
+	}
+	
+	.learn#right{
+		border-color: rgb(51, 204, 0);
+		order: 3;
+	}
+	
+	.button-wrapper::AFTER {
+		order: 4;
+	}
+	
 }
 
 .hidden{
@@ -252,10 +390,14 @@ select#lesson{
 	height: 0;
 }
 
+span.hidden{
+	font-size: 0;
+}
+
 .learn_body{
 	display: flex;
 	flex-flow: column nowrap;
-	height:97%;
+	height:97vh;
 	margin: 0;
 }
 
@@ -268,16 +410,15 @@ select#lesson{
 	background-color: rgb(208,255,210);
 }
 
+/*Learn Buttons
+	Orientation specific content under media above!
+*/
 .learn{
 	height: 10vh;
 	max-height: 100px;
 	font-family: sans-serif;
 	transition: all 0.3s;
-}
-
-.learn#check, .learn#wrong{
-	position: relative;
-	left: 10%;
+	margin: 0.5vw;
 }
 
 
@@ -285,34 +426,95 @@ select#lesson{
 	border-color: rgb(242, 109, 0);
 }
 
+/*Maybe override hover for learning buttons and use js classes completely*/
+
+.learn#check.active{
+	background-color: RoyalBlue;
+	color: snow;
+}
+
+.learn:active{
+	/*empty, use classes to animate key listener!*/
+}
+
+.learn#wrong.active{
+	background-color: rgb(242, 109, 0);
+	color: snow;
+}
+
+.learn#wrong:active{
+	background-color: rgb(242, 109, 0);
+	color: snow;
+}
+
 .learn#right{
 	border-color: rgb(51, 204, 0);
+}
+
+.learn#right.active{
+	background-color: rgb(51, 204, 0);
+	color: snow;
+}
+
+.learn#right:active{
+	background-color: rgb(51, 204, 0);
+	color: snow;
 }
 
 .learn:disabled{
 	cursor: not-allowed;
 	opacity: 0.6;
-	color: rgb(153, 153, 153);
+	color: rgb(153, 153, 153) !important;
 	border-color: rgb(153, 153, 153) !important;
+}
+
+.learn#right:disabled:hover, .learn#wrong:disabled:hover,
+.learn#wrong:disabled:active, .learn#right:disabled:active{
+	background-color: Snow;
+	box-shadow: none;
 }
 
 .button-wrapper{
 	text-align: center;
 	margin-top: auto;
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center
+}
+
+.button-wrapper::AFTER{
+	content: "";
+	width: 100%;
 }
 
 .status_bar{
-	padding: 4px;
+	padding: 1vmin;
 	background-color: steelBlue;
-	margin-bottom: 15px; 
+	margin-bottom: 3vh; 
+	color: snow;
+}
+
+.step{
+    border: 0.2vmin solid Snow;
+    display: inline-block;
+    font-family: Arial monospace;
+    padding: 0 1vmin;
+    text-align: center;
+    width: 5vmin;
+    transition: all 0.1s;
+}
+
+.current{
+	background-color: yellow;
+	color: black;
 }
 
 #lesson_box{
 	display: inline-block;
-	height: 70%;
-	width: 40%;
+	height: 63vh;
+	width: 50vw;
 	overflow: auto;
-	border: 1px solid grey;
+	border: 0.5vmin solid grey;
 }
 
 /*The result page*/
@@ -326,4 +528,122 @@ select#lesson{
 	width: 30vw;
 	table-layout: fixed;
 	margin-top: 10vh;
+	border-collapse: separate;
+	border-spacing: 2vmin 0px;
+}
+
+#result_table td{
+	padding: 2vmin;
+}
+
+#result_table td:nth-child(1) {
+	background-color: rgb(208,255,210);
+}
+
+#result_table td:nth-child(2) {
+	background-color: rgb(255,230,202);
+}
+
+#result_table td:nth-child(3) {
+	background-color: LightBlue;
+}
+
+.bottom_line{
+	padding: 0;
+	margin-top: auto;
+	text-align: center;
+}
+
+/*Managing styles*/
+
+caption{
+	font-size: 2.8vmax;
+	font-weight: bold;
+	margin: 2vmax;
+}
+
+table.manage {
+    margin: auto;
+    width: 80%;
+    border-collapse: collapse;
+    border: 1vmin solid grey;
+}
+
+table#lesson_table td:first-child {
+    text-align: center;
+    width: 2vw;
+}
+
+table#lesson_table td:nth-child(2) {
+    padding: 2vmin;
+    width: 80%;
+}
+
+table#lesson_table td:nth-child(3) {
+    text-align: center;
+}
+
+table#lesson_table td:nth-child(4) {
+    text-align: center;
+}
+
+table.manage th, .manage td {
+    border-collapse: collapse;
+    border-color: grey;
+    border-image: none;
+    border-style: solid;
+    border-width: 0 0.5vmin;
+}
+table.manage tr:nth-child(2n) {
+    background-color: rgb(250, 250, 250);
+}
+table.manage thead{
+	background-color: white;
+}
+
+table.manage button{
+	width: auto;
+	margin: 0;
+	border-width: 0.3vmin;
+}
+
+table.manage td a{
+	text-decoration: none;
+	cursor: pointer;
+	color: black;
+	display: block;
+}
+
+/*
+*
+*	Vocables table section
+*
+*/
+
+/*Checkboxes*/
+table#vocable_table td:first-child {
+    text-align: center;
+    width: 2vw;
+}
+
+/*own language*/
+table#vocable_table td:nth-child(2) {
+    padding: 2vmin;
+    width: 44%;
+}
+
+/*foreign language*/
+table#vocable_table td:nth-child(3) {
+    padding: 2vmin;
+    width: 44%;
+}
+
+/*step*/
+table#vocable_table td:nth-child(4) {
+	text-align: center;
+}
+
+/*buttons*/
+table#vocable_table td:nth-child(5) {
+	text-align: center;
 }

@@ -4,6 +4,16 @@
 	require_once '../models/vocable.php';
 	$date = date("Y-m-d");
 	$db = new DatabaseConnector($_SESSION['user_id']);
+	
+	//if request come from change-site, update the vocable and return to managing page
+	if (isset($_POST['change'])){
+		$voc = $db->getVocById($_POST['id']);
+		$voc->setOwnLang($_POST['ownLanguage']);
+		$voc->setForeignLang($_POST['foreignLanguage']);
+		$db->updateVoc($voc);
+		header("Location: ../manage_vocables.inc.php?name=".$_POST['lesson']);
+		die();
+	}
 	$voc = new Vocable($_SESSION['user_id'],$_POST["ownLanguage"],$_POST["foreignLanguage"],$_POST["lesson"],$date);
 	$db->createVoc($voc);
 	/*$pdo = new PDO("mysql:host=localhost;dbname=vokabeltrainer", "root", "123");

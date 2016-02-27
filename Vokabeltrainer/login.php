@@ -30,10 +30,9 @@ if(isset($_GET['login'])) {
 }
 ?>
 <!DOCTYPE html> 
-<html> 
+<html>
 <head>
-	<link rel="icon" href="favicon.ong" type="image/png">
-	<link rel="stylesheet" href="style/main.css" type="text/css">
+	<?php include 'head_tag.html';?>
 	<title>Login</title>	
 </head> 
 <body>

@@ -13,16 +13,24 @@
 		$_SESSION['count']=$db->getCount();
 	}
 ?>
+<!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="style/main.css" type="text/css">
-		<meta charset="utf-8">
+		<?php include 'head_tag.html';?>
+		<title>Lernen</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script type="text/javascript">
 		var checked=false;
 		var right=0;
 		var wrong=0;
 		var mastered=0;
+		var solution="";
+		var cur_step=0;
+
+		function removeActive(element){
+			$(element).removeClass("active");
+		}
+		
 		function step(button){
 			if (!checked) {
 				return 0;
@@ -30,34 +38,34 @@
 			checked=false;
 			var result = $(button).attr('id');
 			if (result=="right"){
-					right += 1;
-					if ($(step).text()==5){
-						mastered+=1;
-					}
+				right += 1;
+				if ($(step).text()==5){
+					mastered+=1;
+				}
 			}else if (result=="wrong"){
-					wrong += 1;
+				wrong += 1;
 			}
 
 			$.post("script/step.php", {result:result}, function(data){
 				console.log(data);
 				if (data == "end"){
-					//TODO: Status screen and link to homepage here
 					window.location.href='results.php?right='+right+'&wrong='+wrong+'&mastered='+mastered;	
 				}else{
 					var voc = JSON.parse(data);
 					$("#index").text(voc.learn_index+" ");
-					$("#step").text(voc.step);
+					if (voc.step != cur_step){
+						$("#step-"+cur_step).removeClass("current");
+						cur_step = voc.step;
+						$("#step-"+cur_step).addClass("current");
+					}
+					$("#ownCard").addClass("hidden");
 					$("#ownLanguage").addClass("hidden");
-					//$("#ownLanguage").animate({width:'0', opacity:'0', minWidth:'0'},"fast", function(){
-						//$("#ownLanguage").css({"visibility": "collapse", "width":"0"});
-						//$("#ownLanguage").text(voc.own_language);
-					//});
-					//TODO: Make this somewhat more sophisticated
+					solution = voc.own_language;
 					$("#foreignLanguage").animate({opacity:'0'}, 100, function(){
 						$("#foreignLanguage").text(voc.foreign_language);
 						$("#foreignLanguage").animate({opacity:'1'}, 100);
 					});
-					$("#foreignCard").animate({opacity:'0.3'},150);
+					$("#foreignCard").animate({opacity:'0.5'},150);
 					$("#foreignCard").animate({opacity:'1'},150);
 					$("#right").prop("disabled", true);
 					$("#wrong").prop("disabled", true);					
@@ -68,19 +76,34 @@
 		function check(button) {
 			if (!checked){
 				checked = true;
-				//$("#ownLanguage").css({"visibility": "visible", "width":"0", "min-width":"200"});
-				//$("#ownLanguage").animate({width:'30%', opacity:'1'},"fast");
+				$("#ownLanguage").text(solution);
+				$("#ownCard").removeClass("hidden");
 				$("#ownLanguage").removeClass("hidden");
-				//TODO: Make this somewhat more sophisticated
 				$("#right").prop("disabled", false);
 				$("#wrong").prop("disabled", false);
 			}
 		}
 		$(document).ready(function(){
-			$(window).keypress(function(e){
+			$.post("script/step.php", function(data){
+				var voc = JSON.parse(data);
+				solution = voc.own_language;
+				$("#index").text(voc.learn_index);
+				$("#foreignLanguage").text(voc.foreign_language);
+				$("#right").prop("disabled", true);
+				$("#wrong").prop("disabled", true);
+				$("#step-"+voc.step).addClass("current");
+				cur_step = voc.step;
+			});
+			$("button").click(function(){
+				$(this).addClass("active");
+				window.setTimeout(function(element){$(element).removeClass("active");}, 100, $(this));
+			});
+
+			$(window).bind('input keyup',function(e){
 			    switch (e.keyCode){
 			    	case 39:
 			        	$("#check").trigger("click");
+			        	//$("#check").trigger("hover");
 			    		break;
 			    	case 38:
 				    	$("#right").click();
@@ -101,22 +124,28 @@
 		?>
 		<div class='status_bar'>
 			<a>Stufe: </a>
-			<a id="step"><?php echo $voc->getStep()?></a>
-			<a style="float:right"> von <?php echo $_SESSION['count']?></a>
-			<a style="float:right" id="index"><?php echo $voc->getLearnIndex()?></a>
+			<a class='step' id="step-1">1</a>
+			<a class='step' id="step-2">2</a>
+			<a class='step' id="step-3">3</a>
+			<a class='step' id="step-4">4</a>
+			<a class='step' id="step-5">5</a>
+			<div style="float:right">
+				<a id="index"><?php echo $voc->getLearnIndex()?></a>
+				<a> von <?php echo $_SESSION['count']?></a>
+			</div>
 		</div>
 		<div class='card_wrapper'>
 			<div class='card foreign' id='foreignCard'>
 				<span id="foreignLanguage">
 				<?php
-					echo $voc->getForeignLang();
+					//echo $voc->getForeignLang();
 				?>			
 				</span>
 			</div>
-			<div class='card own hidden' id="ownLanguage">
-				<span>
+			<div class='card own hidden' id="ownCard">
+				<span id="ownLanguage">
 				<?php 
-					echo $voc->getOwnLang();
+					//echo $voc->getOwnLang();
 				?>
 				</span>
 			</div>

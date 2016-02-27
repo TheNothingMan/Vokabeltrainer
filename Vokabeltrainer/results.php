@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php
 	session_start();
 ?>
@@ -6,6 +7,7 @@
 		<link rel="stylesheet" href="style/main.css" type="text/css">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<meta charset="utf-8">
+		<title>Ergebnisse</title>
 	</head>
 	<body>
 		<div id="results">

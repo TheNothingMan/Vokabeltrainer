@@ -55,8 +55,10 @@ require_once 'models/user.php';
 				
 				$result=$db->createUser($user);
 				
-				if($result) {		
-					echo 'Du wurdest erfolgreich registriert. <a href="login.php">Zum Login</a>';
+				if($result) {
+					$_SESSION['user_id']=$result;
+					$_SESSION['email']=$email;
+					echo 'Du wurdest erfolgreich registriert. <a href="index.php">Zur Startseite</a>';
 					$showFormular = false;
 				} else {
 					echo 'Beim Abspeichern ist leider ein Fehler aufgetreten<br>';

@@ -1,11 +1,10 @@
+<!DOCTYPE html>
 <?php
 	session_start();
 ?>
 <html>
 	<head>
-		<link rel="shortcut icon" href="favicon.png" type="image/png">
-		<link rel="stylesheet" href="style/main.css" type="text/css">
-		<meta charset="utf-8">
+		<?php include 'head_tag.html';?>
 		<title>Vokabeltrainer</title>
 	</head>
 	<body>

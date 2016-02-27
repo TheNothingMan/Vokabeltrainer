@@ -8,8 +8,11 @@ class DatabaseConnector {
 		$this->user_id = $user_id;
 		if ($_SERVER['HTTP_HOST']=="localhost"){
 			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=vokabeltrainer', 'root', '123' );
-		}else{
+		}else if ($_SERVER['HTTP_HOST']=="www.skaep.lima-city.de"){
 			$this->pdo = new PDO ( 'mysql:host=skaep.lima-db.de;dbname=db_337105_1', 'USER337105', 'ijXgmSe5f' );
+		}else {
+			//for remote debugging and testing of localhost server from other devices
+			$this->pdo = new PDO ( "mysql:host=localhost;dbname=vokabeltrainer", 'root', '123' );
 		}
 	}
 	
@@ -58,7 +61,7 @@ class DatabaseConnector {
 	 * @return Lesson $lesson if success, false otherwise.
 	 */
 	public function getLessonByName($name) {
-		$result = $this->pdo->query ( "SELECT * FROM lessons WHERE name='$name'" )->fetch ();
+		$result = $this->pdo->query ( "SELECT * FROM lessons WHERE name='$name' and user_id=$this->user_id" )->fetch ();
 		if (!$result){
 			return false;
 		}
@@ -81,7 +84,7 @@ class DatabaseConnector {
 	 * @return array of Lesson.
 	 */
 	public function getActiveLessons() {
-		$query = "SELECT * FROM lessons WHERE active=1 AND user_id IN (0," . $this->user_id . ")";
+		$query = "SELECT * FROM lessons WHERE active=1 AND user_id =$this->user_id";
 		$lessons = [ ];
 		foreach ( $this->pdo->query ( $query ) as $row ) {
 			$lesson = new Lesson ();
@@ -92,8 +95,13 @@ class DatabaseConnector {
 		return $lessons;
 	}
 	
+	/**
+	 * Get all lessons.
+	 *
+	 * @return array[Lesson]
+	 */
 	public function getAllLessons() {
-		$query = "SELECT * FROM lessons WHERE user_id IN (0," . $this->user_id . ")";
+		$query = "SELECT * FROM lessons WHERE user_id = $this->user_id ORDER BY name";
 		$lessons = [ ];
 		foreach ( $this->pdo->query ( $query ) as $row ) {
 			$lesson = new Lesson ();
@@ -112,6 +120,34 @@ class DatabaseConnector {
 	public function resetLastChosen($id) {
 		$this->pdo->exec ( "UPDATE lessons SET last_chosen=0 WHERE last_chosen=1 AND user_id=" . $this->user_id );
 		$this->pdo->exec ( "UPDATE lessons SET last_chosen=1 WHERE id=$id" );
+	}
+	
+	/**
+	 * Count the vocables in one lesson.
+	 * @param unknown $id
+	 */
+	public function countLessonVocs($id) {
+		$row=$this->pdo->query("SELECT COUNT(*) AS anzahl FROM vocables WHERE lesson=$id")->fetch();
+		return $row['anzahl'];		
+	}
+	
+	/**
+	 * 
+	 * @param Lesson $lesson
+	 * @param bool $keep
+	 */
+	public function deleteLesson(Lesson $lesson, $keep){
+		if ($keep){
+			//TODO: not working!
+			$unsorted_lesson=$this->getLessonByName("Unsortiert");
+			$query="UPDATE vocables SET lesson=".$unsorted_lesson->getId()." WHERE lesson=".$lesson->getId();
+			$this->pdo->exec("UPDATE vocables SET lesson=".$unsorted_lesson->getId()." WHERE lesson=".$lesson->getId());
+		}else{
+			
+			$this->pdo->exec("DELETE FROM lessons WHERE lesson=".$lesson->getId());
+		}
+		
+		$this->pdo->exec("DELETE FROM lessons WHERE id=".$lesson->getId());		
 	}
 	
 	//VOCABLE METHODS
@@ -151,6 +187,17 @@ class DatabaseConnector {
 		
 	}
 	
+	public function getVocById($id){
+		//include user_id to prevent malicious changes
+		$array=$this->pdo->query("SELECT * FROM vocables WHERE id=$id AND user_id=$this->user_id")->fetch();
+		if(!$array){
+			return "evil";				
+		}
+		$voc = new Vocable();
+		$voc->fillFromArray($array);
+		return $voc;
+	}
+	
 	/**
 	 * Get all vocables in a lesson.
 	 * @param int $lesson_id
@@ -168,6 +215,23 @@ class DatabaseConnector {
 	}
 	
 	/**
+	 * Get all vocables in a lesson.
+	 * @param String $lesson_name
+	 */
+	public function getVocablesByLessonName($lesson_name){
+		//Query selects vocables by lessons.name to prevent malicious SQL
+		$query = "SELECT vocables.* FROM vocables,lessons WHERE lessons.name='$lesson_name' AND lessons.user_id=$this->user_id AND lessons.id=vocables.lesson";
+		$vocables = [];
+		foreach ($this->pdo->query($query) as $row){
+			$voc = new Vocable();
+			$voc->fillFromArray($row);
+			$vocables[]=$voc;
+		}
+	
+		return $vocables;
+	}
+	
+	/**
 	 * Prepares Vocables for Learning.
 	 * @return Number of vocs if successful.
 	 */
@@ -175,7 +239,7 @@ class DatabaseConnector {
 		$query = "UPDATE vocables SET learn_index=0 WHERE user_id=".$this->user_id;
 		$this->pdo->exec($query);
 		$date = date("Y-m-d");
-		$data = $this->pdo->query("SELECT id FROM lessons WHERE active=1 AND user_id IN (0,".$this->user_id.")");
+		$data = $this->pdo->query("SELECT id FROM lessons WHERE active=1 AND user_id=$this->user_id");
 		$lessons= $data->fetchAll(PDO::FETCH_COLUMN,0);
 		$query = "SELECT id FROM vocables WHERE next_date <= '$date' AND lesson IN (".join(",",$lessons).") AND step<6 AND user_id=".$this->user_id;
 		$vocs = $this->pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
@@ -274,6 +338,28 @@ class DatabaseConnector {
 		}
 	}
 	
+	public function moveVoc(Vocable $voc, Lesson $lesson){
+		return $this->pdo->exec("UPDATE vocables SET lesson=".$lesson->getId()." WHERE user_id=$this->user_id AND id=".$voc->getId());
+	}
+	
+	/**
+	 * Delete vocable.
+	 * @param Vocable $voc
+	 */
+	public function deleteVoc(Vocable $voc){
+		$this->pdo->exec("DELETE FROM vocables WHERE user_id=$this->user_id AND id=".$voc->getId());
+	}
+	
+	
+	/**
+	 * Delete voc by specifying id only.
+	 * @param unknown $id
+	 */
+	public function deleteVocById($id){
+		$statement=$this->pdo->prepare("DELETE FROM vocables WHERE user_id=$this->user_id AND id= :id");
+		return $statement->execute(["id"=>$id]);
+	}
+	
 	//USER METHODS
 	public function userExists(User $user){
 		$statement = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
@@ -282,11 +368,23 @@ class DatabaseConnector {
 		return $result;
 	}
 	
+	/**
+	 * This creates a new user. NOTE: This function creates a new "Unsortiert" lesson for each user.
+	 * @param User $user
+	 * 
+	 * @return int user_id
+	 */
 	public function createUser(User $user){
 		$statement = $this->pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :password)");
 		$result = $statement->execute(array('email' => $user->getEmail(), 'password' => $user->getPassword()));
+		if(!$result){
+			return $result;
+		}
+		$this->user_id=$this->pdo->lastInsertId();
+		$lesson = new Lesson("Unsortiert", $this->user_id);
+		$this->saveLesson($lesson);
 		
-		return $result;
+		return $this->user_id;
 	}
 	
 	/**

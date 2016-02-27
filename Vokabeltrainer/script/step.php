@@ -8,7 +8,9 @@
 	#  that is: own_/foreign_language, lesson, step, index
 	
 	$db = new DatabaseConnector($_SESSION['user_id']);
-	$db->scheduleVoc($_SESSION['current_id'], $_POST['result']);
+	if (isset($_POST['result'])){
+		$db->scheduleVoc($_SESSION['current_id'], $_POST['result']);
+	}
 	
 	#  Now return the next vocable
 	$new_voc = $db->getNextVocable();

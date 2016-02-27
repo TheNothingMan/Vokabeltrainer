@@ -5,15 +5,15 @@
 	require_once 'models/lesson.php';
 	if (!isset($_SESSION['user_id'])){
 		//TODO: Update urls
-		$_SESSION['origin_url']="http://localhost/".$_SERVER['REQUEST_URI'];
+		$_SESSION['origin_url']="http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 		header("Location: login.php");
 	}
 ?>
+<!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="style/main.css" type="text/css">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<meta charset="utf-8">
+		<?php include 'head_tag.html';?>
+		<title>Lernen</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script type="text/javascript">
 			function saveLesson(lesson){
@@ -51,7 +51,7 @@
 				<?php
 					$db = new DatabaseConnector($_SESSION['user_id']);
 					foreach ($db->getAllLessons() as $row){
-						echo("<input type=\"checkbox\" value=\"".$row->getId()."\" name=\"lesson_".$row->getName()."\" onchange=\"saveLesson(this)\"".($row->getActive()==1?" checked":"").">".$row->getName()."<br>");			
+						echo("<input type=\"checkbox\" value=\"".$row->getId()."\" name=\"lesson_".$row->getName()."\" onchange=\"saveLesson(this)\"".($row->getActive()==1?" checked":"")."><a>".$row->getName()."</a><br>");			
 					}
 				?>
 				</div>
@@ -61,7 +61,7 @@
 					}
 				?>
 			</form>
-			<div class='wrapper'>
+			<div class='bottom_line'>
 				<button onclick="start()">Beginnen</button>
 			</div>
 		</div>

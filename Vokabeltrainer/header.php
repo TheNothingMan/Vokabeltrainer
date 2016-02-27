@@ -1,6 +1,6 @@
 <!-- no session_start here because it is included in parent -->
-<div id="title">
-	<a id="title" href="index.php">Vokabeltrainer</a>
+<div class="title">
+	<a class="title" href="index.php">Vokabeltrainer</a>
 	<span id=login>
 	<?php
 		if (isset($_SESSION['user_id'])){
@@ -16,7 +16,7 @@
 <div id="menu">
 <a href="input_vocables.php">Eingeben</a>
 <a href="learn.php">Lernen</a>
-<a href="new_lesson.php">Lektion erstellen</a>
+<a href="manage.php">Verwalten</a>
 </div>
 <!-- <ul id="menu"> -->
 <!-- 	<li><a href="input_vocables.php">Eingeben</a></li> -->

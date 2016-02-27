@@ -6,11 +6,10 @@
 		header("Location: login.php");
 	}
 ?>
+<!DOCTYPE html>
 <html>
 	<head>
-		<link rel="icon" href="favicon.ong" type="image/png">
-		<link rel="stylesheet" href="style/main.css" type="text/css">
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<?php include 'head_tag.html';?>
 		<title>Lernen</title>
 	</head>
 <body>
@@ -20,12 +19,13 @@
 	</div>
 	<div class="content wrapper">
 		<?php
-			if (!isset($_POST['start'])){
-				echo("<iframe  class='content' id='content_frame' src='learn_options.php'></iframe>");
-			}else{
-				echo("<iframe class='content' id='content_frame' src='learn_step.php'></iframe>");
-			}
+// 			if (!isset($_POST['start'])){
+// 				echo("<iframe  class='content' id='content_frame' src='learn_options.php'></iframe>");
+// 			}else{
+// 				echo("<iframe class='content' id='content_frame' src='learn_step.php'></iframe>");
+// 			}
 		?>
+		<iframe  class='content' name='content_frame' id='content_frame' src='learn_options.php'></iframe>
 	</div>
 </div>
 </body>

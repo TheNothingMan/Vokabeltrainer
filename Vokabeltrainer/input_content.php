@@ -3,13 +3,14 @@ session_start();
 require_once 'models/database.php';
 require_once 'models/lesson.php';
 ?>
+<!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="style/main.css" type="text/css">
-		<meta charset="utf-8">
+		<?php include 'head_tag.html';?>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 		<script type="text/javascript">
 			var date = new Date().toISOString().slice(0, 10).replace('T', ' ');
+			var prevent = true;
 
 			function lastChosen(){
 				var lesson = $("#lesson").val();
@@ -53,23 +54,38 @@ require_once 'models/lesson.php';
 
 				$("#newVoc").on('submit', function(e){
 					//Prevent page reload when submitted normally
-					e.preventDefault();
-					sendAjax();
+					if (prevent){
+						e.preventDefault();
+						sendAjax();
+					}else{
+						prevet=true;
+					}
+				});
+
+				$("#new_lesson").click(function(e){
+					prevent = false;
+					$("#newvoc").submit();
 				});
 			});
 		</script>
 	</head>
 	<body>
 		<div>
-			<form id="newVoc" style="text-align: center">
+			<!-- use new lesson as target, saving is done via ajax -->
+			<form action="new_lesson.inc.php" id="newVoc" method="post" style="text-align: center">
 				<div class="voc_input">
 					<div>
 						<label for="ownLanguage">Muttersprache:</label><br>
-							<textarea id="ownLanguage" name="ownLanguage"></textarea>
+							<textarea id="ownLanguage" name="ownLanguage"><?php 
+								if (isset($_SESSION['own_language'])){echo $_SESSION['own_language'];}?></textarea>
 					</div>
 					<div>
 						<label for="foreignLanguage">Fremdsprache:</label><br>
-							<textarea id="foreignLanguage" name="foreignLanguage"></textarea>
+							<textarea id="foreignLanguage" name="foreignLanguage"><?php
+								if (isset($_SESSION['foreign_language'])){
+									echo $_SESSION['foreign_language'];
+									unset($_SESSION['own_language'], $_SESSION['foreign_language']);
+								}?></textarea>
 					</div>
 				</div>
 				<br>
@@ -92,7 +108,10 @@ require_once 'models/lesson.php';
 							}*/
 						?>
 					</select><br>
-					<a href="new_lesson.php">Lektion erstellen</a>
+<!-- 					<input type="submit" id='new_lesson' name="new_lesson" value='Lektion erstellen'> -->
+					<button id='new_lesson' name="new_lesson">Lektion erstellen</button>
+					<input type="hidden" name='origin' value='input_content.php'>
+					<a href="new_lesson.inc.php">Lektion erstellen</a>
 				</div>
 			</form>
 			
