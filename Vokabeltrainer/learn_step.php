@@ -9,8 +9,15 @@
 		die("Keine Vokabeln für heute übrig. Zurück zur <a href='index.php' target='_top'>Startseite</>.");
 	}
 	$_SESSION['current_id']=$voc->getId();
+	//Init the count variables from db if continuing with old query. Allows cross-device querys.
 	if (isset($_POST['continue'])){
 		$_SESSION['count']=$db->getCount();
+		$prev_results=$db->getResultCount();
+		$_SESSION['right_c']=$prev_results['right_c'];
+		$_SESSION['wrong_c']=$prev_results['wrong_c'];
+		$_SESSION['mastered_c']=$prev_results['mastered_c'];
+		$_SESSION['direction'] = $_POST['direction'];
+		$_SESSION['plan'] = $_POST['plan'];
 	}
 ?>
 <!DOCTYPE html>
@@ -26,15 +33,22 @@
 		var mastered=0;
 		var solution="";
 		var cur_step=0;
+		var id;
 
-		function removeActive(element){
-			$(element).removeClass("active");
+		function change(button){
+			var ol = solution;
+			var fl = $("#foreignLanguage").text();
+			var origin = "../learn_step.php";
+			console.log(id);
+			//TODO: SECURITY???
+			window.location.href="change_voc.inc.php?ol="+ol+"&fl="+fl+"&origin="+origin+"&id="+id;
 		}
 		
 		function step(button){
 			if (!checked) {
 				return 0;
 			}
+			$("#status_bar").addClass("loading");
 			checked=false;
 			var result = $(button).attr('id');
 			if (result=="right"){
@@ -47,7 +61,6 @@
 			}
 
 			$.post("script/step.php", {result:result}, function(data){
-				console.log(data);
 				if (data == "end"){
 					window.location.href='results.php?right='+right+'&wrong='+wrong+'&mastered='+mastered;	
 				}else{
@@ -58,6 +71,8 @@
 						cur_step = voc.step;
 						$("#step-"+cur_step).addClass("current");
 					}
+					id = voc.id;
+					$("#lesson_name").text(voc.lesson_name);
 					$("#ownCard").addClass("hidden");
 					$("#ownLanguage").addClass("hidden");
 					solution = voc.own_language;
@@ -68,7 +83,8 @@
 					$("#foreignCard").animate({opacity:'0.5'},150);
 					$("#foreignCard").animate({opacity:'1'},150);
 					$("#right").prop("disabled", true);
-					$("#wrong").prop("disabled", true);					
+					$("#wrong").prop("disabled", true);	
+					$("#status_bar").removeClass("loading");				
 				}
 			});
 		}
@@ -86,13 +102,16 @@
 		$(document).ready(function(){
 			$.post("script/step.php", function(data){
 				var voc = JSON.parse(data);
+				id=voc.id;
 				solution = voc.own_language;
 				$("#index").text(voc.learn_index);
 				$("#foreignLanguage").text(voc.foreign_language);
 				$("#right").prop("disabled", true);
 				$("#wrong").prop("disabled", true);
 				$("#step-"+voc.step).addClass("current");
+				$("#lesson_name").text(voc.lesson_name);
 				cur_step = voc.step;
+				$("#status_bar").removeClass("loading");
 			});
 			$("button").click(function(){
 				$(this).addClass("active");
@@ -122,16 +141,18 @@
 				die("Keine Vokabeln für heute übrig. Zurück zur <a href='index.php' target='_top'>Startseite</a>.");
 			}
 		?>
-		<div class='status_bar'>
+		<div id='status_bar' class='status_bar loading'>
 			<a>Stufe: </a>
 			<a class='step' id="step-1">1</a>
 			<a class='step' id="step-2">2</a>
 			<a class='step' id="step-3">3</a>
 			<a class='step' id="step-4">4</a>
 			<a class='step' id="step-5">5</a>
+			<a id='lesson_name'></a>
 			<div style="float:right">
 				<a id="index"><?php echo $voc->getLearnIndex()?></a>
-				<a> von <?php echo $_SESSION['count']?></a>
+				<a id='max'> von <?php echo $_SESSION['count']?></a>
+				<button id='change_voc' onclick='change(this)'>Ändern</button>
 			</div>
 		</div>
 		<div class='card_wrapper'>

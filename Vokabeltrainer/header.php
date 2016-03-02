@@ -5,7 +5,7 @@
 	<?php
 		if (isset($_SESSION['user_id'])){
 			//TODO: Show username here
-			echo("Angemeldet als <br><b>".$_SESSION['email']."</b><br>");
+			echo("Angemeldet als <br><a href='account_settings.php'><b>".$_SESSION['email']."</b></a><br>");
 			echo("<a href='logout.php' target='content_frame'>Logout</a>");
 		}else{
 			echo("<a href='login.php'>login</a>");

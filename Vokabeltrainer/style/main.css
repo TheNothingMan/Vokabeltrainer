@@ -26,7 +26,7 @@ iframe body{
 		width: auto;
 	}
 	
-		#login{
+	#login{
 		font-size: 2.6vmax;
 	}
 	
@@ -43,8 +43,6 @@ iframe body{
 	
 	input[type=button], input[type=submit], button{
 		font-size:3.2vmax;
-		width: auto;
-		padding: 2vmin;
 	}
 	
 	#login{
@@ -64,7 +62,6 @@ iframe body{
 	
 	input[type=button], input[type=submit], button{
 		font-size:1.2vmax;
-		width: 20%;
 	}
 	
 	#login{
@@ -193,6 +190,15 @@ ul#menu li a:hover {
 	float: right;
 }
 
+#login a{
+	text-decoration: none;
+	color: RoyalBlue;
+}
+
+#login a:hover{
+	text-decoration: underline;
+}
+
 div.title{
 	text-align: left;
 }
@@ -205,8 +211,8 @@ a.title{
 	text-decoration: none;
 }
 
-input [type=text], input [type=email], input[type=password]{
-	min-height: 5vmin;	
+input[type=text], input[type=email], input[type=password]{
+	min-height: 4vmin;	
 }
 
 input[type=button], input[type=submit], button{
@@ -219,6 +225,8 @@ input[type=button], input[type=submit], button{
 	border: 1vmin solid;
 	height: auto;
 	transition: all 0.2s;
+	width: auto;
+	padding: 2vmin;
 	/*font-size: 1.2vmax;*/
 }
 
@@ -232,7 +240,7 @@ input[type=button]:hover, input[type=submit]:hover, button:HOVER{
 	box-shadow: 1px 1px 10px rgba(20,0,20,0.3);
 }
 
-input[type='checkbox']{
+input[type='checkbox'], input[type='radio']{
 	width: 3vmin;
 	height: 3vmin;
 	margin: 1vmin;
@@ -308,11 +316,14 @@ div#options{
 		box-shadow: 0 3px 10px rgba(20,0,20,0.6);
 		min-width: 200px;
 		font-family: sans-serif;
-		font-size: 2.2vmax;
+		font-size: 150%;
+		padding: 1vmin;
 	}
 	
 	.learn{
 		font-size: 1.2vmax;
+		width: 20%;
+		padding: 0;
 	}
 	
 	.learn#check, .learn#wrong{
@@ -331,6 +342,24 @@ div#options{
 	
 	.button-wrapper::AFTER {
 		order: 1;
+	}
+	
+	/*use place*/
+	.status_bar #lesson_name{
+		margin-left: 5vmin;
+		padding-left: 5vmin;
+	}
+	
+	.step{
+		width: 5vmin;
+	}
+	
+	#change_voc{
+		font-size: 0.9vmax;
+	}
+	
+	#result_table{
+		width: 30vw;
 	}
 }
 
@@ -353,12 +382,13 @@ div#options{
 		box-shadow: 0 3px 10px rgba(20,0,20,0.6);
 		min-width: 200px;
 		font-family: sans-serif;
-		font-size: 3.2vmax;
+		font-size: 170%;
+		padding: 1vmin;
 	}
 	
 	.learn{
 		font-size: 2.8vmax;
-		width: 28vw;
+		width: 30vw;
 	}
 	
 	.learn#check, .learn#wrong{
@@ -379,6 +409,43 @@ div#options{
 		order: 4;
 	}
 	
+	/*save place!!!*/
+	.status_bar #lesson_name{
+		margin-left: 0.5vmin;
+		padding-left: 1vmin;
+	}
+	
+	.step{
+		width: auto;
+	}
+	
+	#change_voc{
+		font-size: 1.5vmax;
+	}
+	
+	#result_table{
+		width: 95vw;
+	}
+}
+
+#lesson_box{
+	display: inline-block;
+	height: 63vh;
+	width: 45vw;
+	overflow: auto;
+	border: 0.5vmin solid grey;
+}
+
+#other_options{
+	display: inline-block;
+	width: 45vw;
+	padding: 3vmin;
+	border: 0.5vmin solid grey;
+}
+
+.radio_wrapper{
+	padding-left: 1.5em;
+	text-indent: -1.5em;
 }
 
 .hidden{
@@ -419,6 +486,7 @@ span.hidden{
 	font-family: sans-serif;
 	transition: all 0.3s;
 	margin: 0.5vw;
+	padding: 1vmin;
 }
 
 
@@ -487,6 +555,26 @@ span.hidden{
 	width: 100%;
 }
 
+@keyframes loading{
+	0% {background-color: SteelBlue;}
+	50% {background-color: LightBlue;}
+	100% {background-color: SteelBlue;}
+}
+
+@keyframes example {
+    0%   {background-color: red;}
+    25%  {background-color: yellow;}
+    50%  {background-color: blue;}
+    100% {background-color: green;}
+}
+
+.loading{
+	animation-name: loading;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-delay: 1s;
+}
+
 .status_bar{
 	padding: 1vmin;
 	background-color: steelBlue;
@@ -500,7 +588,6 @@ span.hidden{
     font-family: Arial monospace;
     padding: 0 1vmin;
     text-align: center;
-    width: 5vmin;
     transition: all 0.1s;
 }
 
@@ -509,12 +596,20 @@ span.hidden{
 	color: black;
 }
 
-#lesson_box{
-	display: inline-block;
-	height: 63vh;
-	width: 50vw;
-	overflow: auto;
-	border: 0.5vmin solid grey;
+.status_bar #max{
+	border-right: 0.2vmin solid snow;
+	padding-right: 2vmin;
+}
+
+.status_bar #lesson_name{
+	border-left: 0.2vmin solid snow;
+}
+
+#change_voc{
+	border-color: snow;
+    margin: 0;
+    padding: 0 1vw;
+    width: auto;	
 }
 
 /*The result page*/
@@ -525,7 +620,6 @@ span.hidden{
 #result_table{
 	text-align: center;
 	margin: auto;
-	width: 30vw;
 	table-layout: fixed;
 	margin-top: 10vh;
 	border-collapse: separate;
@@ -564,6 +658,7 @@ caption{
 
 table.manage {
     margin: auto;
+    margin-bottom: 5vmin;
     width: 80%;
     border-collapse: collapse;
     border: 1vmin solid grey;
@@ -646,4 +741,52 @@ table#vocable_table td:nth-child(4) {
 /*buttons*/
 table#vocable_table td:nth-child(5) {
 	text-align: center;
+}
+
+.manage_box{
+	display: inline-flex;
+	text-align: center;
+	flex-flow: column;
+	align-items: center;
+	justify-content: center;
+	padding: 3vmin;
+	background-color: rgb(242, 242, 253);
+}
+
+.manage_box button{
+	min-width: 10vw;
+}
+
+/*Tooltips*/
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 0.5vmin dotted black; /* If you want dots under the hoverable text */
+    margin: 0 3vmin;
+    font-size: 80%;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 30vw;
+    background-color: Navy;
+    color: Snow;
+    text-align: center;
+    padding: 1vmin 2vmin;
+    border-radius: 2vmin;
+ 
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -15vw;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext, .tooltip:active .tooltiptext, .tooltip:focus .tooltiptext{
+    visibility: visible;
 }

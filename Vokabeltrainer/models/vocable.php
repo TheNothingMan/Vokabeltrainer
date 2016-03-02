@@ -138,5 +138,17 @@
 			
 			return $array;
 		}
+		
+		public function swap(){
+			$helper=$this->foreign_lan;
+			$this->foreign_lan=$this->own_lan;
+			$this->own_lan=$helper;
+		}
+		
+		public function swapRandomly(){
+			if (mt_rand(0,1)==1){
+				$this->swap();
+			}
+		}
 }
 ?>

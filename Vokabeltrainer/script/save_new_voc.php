@@ -11,7 +11,7 @@
 		$voc->setOwnLang($_POST['ownLanguage']);
 		$voc->setForeignLang($_POST['foreignLanguage']);
 		$db->updateVoc($voc);
-		header("Location: ../manage_vocables.inc.php?name=".$_POST['lesson']);
+		header("Location: ".$_POST['origin']);
 		die();
 	}
 	$voc = new Vocable($_SESSION['user_id'],$_POST["ownLanguage"],$_POST["foreignLanguage"],$_POST["lesson"],$date);

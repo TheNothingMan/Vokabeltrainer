@@ -1,0 +1,20 @@
+@CHARSET "utf-8";
+
+#lesson_box{
+	display: inline-block;
+	height: 63vh;
+	width: 45vw;
+	overflow: auto;
+	border: 0.5vmin solid grey;
+}
+
+#other_options{
+	display: inline-block;
+	width: 45vw;
+}
+
+div#options{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 98vh;
+}

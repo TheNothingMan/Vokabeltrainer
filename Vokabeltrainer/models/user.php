@@ -39,6 +39,11 @@
 			$this->password = $password_hash;
 		}
 		
+		/**
+		 * Verify password.
+		 * @param unknown $password
+		 * @return boolean
+		 */
 		public function verifyPassword($password){
 			return password_verify($password, $this->password);
 		}

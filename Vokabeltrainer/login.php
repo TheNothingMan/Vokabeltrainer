@@ -54,7 +54,7 @@ if(isset($_GET['login'])) {
 		Dein Passwort:<br>
 		<input type="password" size="40"  maxlength="250" name="password"><br>
 		 
-		<input type="submit" value="Abschicken">
+		<input type="submit" value="Login">
 		</form> 
 
 		<span>Noch kein Acount? Hier </span><a href="register.php">registrieren.</a>

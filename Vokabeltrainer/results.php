@@ -15,7 +15,10 @@
 			<table id="result_table">
 				<tbody>
 					<tr><td>Richtig</td><td>Falsch</td><td>Gemeistert</td></tr>
-					<?php echo("<tr><td>".$_GET['right']."</td><td>".$_GET['wrong']."</td><td>".$_GET['mastered']."</td></tr>")?>
+					<?php 
+// 						echo("<tr><td>".$_GET['right']."</td><td>".$_GET['wrong']."</td><td>".$_GET['mastered']."</td></tr>")
+						echo("<tr><td>".$_SESSION['right_c']."</td><td>".$_SESSION['wrong_c']."</td><td>".$_SESSION['mastered_c']."</td></tr>")
+					?>
 				</tbody>				
 			</table>
 			

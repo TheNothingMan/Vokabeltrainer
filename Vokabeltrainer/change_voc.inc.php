@@ -34,7 +34,7 @@ require_once 'models/lesson.php';
 							<textarea id="foreignLanguage" name="foreignLanguage"><?php echo($_GET['fl'])?></textarea>
 					</div>
 				</div>
-				<input type="hidden" name="lesson" value="<?php echo $_GET['lesson']?>">
+				<input type="hidden" name="origin" value="<?php echo ($_GET['origin']);?>">
 				<input type="hidden" name="id" value="<?php echo $_GET['id']?>">
 				<br>
 				<input type="submit" id="submit" name="change" value="Speichern">

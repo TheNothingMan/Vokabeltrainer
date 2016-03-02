@@ -8,10 +8,13 @@ class DatabaseConnector {
 		$this->user_id = $user_id;
 		if ($_SERVER['HTTP_HOST']=="localhost"){
 			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=vokabeltrainer', 'root', '123' );
-		}else if ($_SERVER['HTTP_HOST']=="www.skaep.lima-city.de"){
+		}else if (strpos($_SERVER['HTTP_HOST'],"skaep.lima-city.de")!==false){
 			$this->pdo = new PDO ( 'mysql:host=skaep.lima-db.de;dbname=db_337105_1', 'USER337105', 'ijXgmSe5f' );
+		}else if (strpos($_SERVER['HTTP_HOST'],"skaeppler.mygoodpage.org")!==false){
+			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=nktvnrfd_vokabeltrainer', 'nktvnrfd_admin', 'v*TL8ad_KC=4' );
 		}else {
 			//for remote debugging and testing of localhost server from other devices
+			echo $_SERVER['HTTP_HOST'];
 			$this->pdo = new PDO ( "mysql:host=localhost;dbname=vokabeltrainer", 'root', '123' );
 		}
 	}
@@ -81,7 +84,7 @@ class DatabaseConnector {
 	/**
 	 * Get all active lessons.
 	 *
-	 * @return array of Lesson.
+	 * @return array[Lesson]
 	 */
 	public function getActiveLessons() {
 		$query = "SELECT * FROM lessons WHERE active=1 AND user_id =$this->user_id";
@@ -233,15 +236,23 @@ class DatabaseConnector {
 	
 	/**
 	 * Prepares Vocables for Learning.
+	 * @param Boolean $plan if timeplan should be used.
+	 * @param int[] $steps The steps to learn.  
 	 * @return Number of vocs if successful.
 	 */
-	public function prepareLearnVocables() {
+	public function prepareLearnVocables($plan, $steps) {
 		$query = "UPDATE vocables SET learn_index=0 WHERE user_id=".$this->user_id;
 		$this->pdo->exec($query);
-		$date = date("Y-m-d");
+		
 		$data = $this->pdo->query("SELECT id FROM lessons WHERE active=1 AND user_id=$this->user_id");
 		$lessons= $data->fetchAll(PDO::FETCH_COLUMN,0);
-		$query = "SELECT id FROM vocables WHERE next_date <= '$date' AND lesson IN (".join(",",$lessons).") AND step<6 AND user_id=".$this->user_id;
+		//check if the plan should be used
+		if ($plan) {
+			$date = date("Y-m-d");
+			$query = "SELECT id FROM vocables WHERE next_date <= '$date' AND lesson IN (".join(",",$lessons).") AND step<6 AND user_id=".$this->user_id;
+		}else{
+			$query = "SELECT id FROM vocables WHERE lesson IN (".join(",",$lessons).") AND step IN (".join(",",$steps).") AND user_id=".$this->user_id;
+		}
 		$vocs = $this->pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
 		//Shuffle the array
 		shuffle($vocs);
@@ -283,13 +294,15 @@ class DatabaseConnector {
 	 * Schedules next_date for voc.
 	 * @param int $vocable_id Id of the voc to schedule.
 	 * @param unknown $result One of 'right', 'wrong', ('check')
+	 * @param bool $plan If timeplan is used.
 	 * @return True if successful, false otherwise.
 	 */
-	public function scheduleVoc($vocable_id, $result) {
+	public function scheduleVoc($vocable_id, $result, $plan) {
 		$date=date("Y-m-d");
 		
 		if ($result=="wrong"){
-			#Take $_SESSION['current_id'] and reset step to 1, next date to today and learn_index to 0
+			//Take $_SESSION['current_id'] and reset step to 1, next date to today and learn_index to 0
+			//reset to step 1 even if timeplan isn't used
 			$error=$this->pdo->exec("UPDATE vocables SET step=1
 			, next_date='$date'
 			, last_date='$date'
@@ -302,6 +315,7 @@ class DatabaseConnector {
 			$voc->fillFromArray($array);
 			$step=$voc->getStep();
 			$next_date=date_create_from_format("Y-m-d", $date);
+			//Calculate date, based on current step.
 			switch ($step) {
 				case 1:
 					date_add($next_date, date_interval_create_from_date_string("1 day"));
@@ -318,7 +332,7 @@ class DatabaseConnector {
 				case 4:
 					date_add($next_date, date_interval_create_from_date_string("16 day"));
 					break;
-						
+				//This isn't of any use currently.		
 				case 5:
 					date_add($next_date, date_interval_create_from_date_string("24 day"));
 					break;
@@ -327,7 +341,10 @@ class DatabaseConnector {
 		
 					break;
 			}
-			$voc->setStep($step+1);
+			//If plan is used, update the step. Only set dates otherwise.
+			if ($plan){
+				$voc->setStep($step+1);
+			}
 			$voc->setNextDate(date_format($next_date, "Y-m-d"));
 			$voc->setLastDate($date);
 			$voc->setLearnIndex(0);
@@ -336,10 +353,6 @@ class DatabaseConnector {
 			
 			return $result;
 		}
-	}
-	
-	public function moveVoc(Vocable $voc, Lesson $lesson){
-		return $this->pdo->exec("UPDATE vocables SET lesson=".$lesson->getId()." WHERE user_id=$this->user_id AND id=".$voc->getId());
 	}
 	
 	/**
@@ -403,6 +416,82 @@ class DatabaseConnector {
 		$user->fillFromArray($data);
 		
 		return $user;
+	}
+	
+	/**
+	 * Get user by id.
+	 * @param unknown $id
+	 * @return User if successful, false otherwise.
+	 */
+	public function getUserById($id){
+		$statement = $this->pdo->prepare("SELECT * FROM users WHERE id = :id");
+		$result = $statement->execute(['id' => $id]);
+		$data = $statement->fetch();
+		if (!$data){
+			return false;
+		}
+		$user = new User();
+		$user->fillFromArray($data);
+	
+		return $user;
+	}
+	
+	/**
+	 * Update existing user.
+	 * 
+	 * @param User $user
+	 * @return boolean result
+	 */
+	public function updateUser(User $user){
+		$statement = $this->pdo->prepare("UPDATE users SET email=:email, password=:password WHERE id=".$user->getId());
+		$result = $statement->execute(array('email' => $user->getEmail(), 'password' => $user->getPassword()));
+		return $result;
+	}
+	
+	/**
+	 * Store the count of results for later use.
+	 * @param string $field
+	 * @param int $count
+	 * @return boolean
+	 */
+	public function setResultCount($field, $count){
+		//this stores result counts in the database, so that they are available even on other devices.
+		return $this->pdo->exec("UPDATE users SET $field=$count WHERE id=$this->user_id");
+	}
+	
+	/**
+	 * Get the count of results.
+	 * @return Array["right","wrong","mastered"]
+	 */
+	public function getResultCount(){
+		$data = $this->pdo->query("SELECT right_c,wrong_c,mastered_c FROM users WHERE id=$this->user_id")->fetch();
+		return $data;
+	}
+	
+	/**
+	 * Store options in database. This will write a JSON string to db.
+	 * @param [] $options
+	 */
+	public function saveOptions($options){
+		$options_json = json_encode($options);
+		$statement = $this->pdo->prepare("UPDATE users SET options=:json WHERE id=$this->user_id");
+		$result = $statement->execute(["json"=>$options_json]);
+		return $result;
+	}
+	
+	/**
+	 * Get options from db.
+	 * @return array options
+	 */
+	public function getOptions(){
+		$data = $this->pdo->query("SELECT options FROM users WHERE id=$this->user_id")->fetch();
+		if (!$data || $data['options']==null){
+			//Init default values.
+			$options=["plan"=>"true", "direction"=>"fo", "steps"=>[1,2,3,4,5,6]];
+		}else{
+			$options = json_decode($data['options'],true);
+		}
+		return $options;
 	}
 }
 ?>

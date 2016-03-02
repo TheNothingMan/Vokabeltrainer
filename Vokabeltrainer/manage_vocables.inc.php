@@ -19,10 +19,10 @@
 				var id = $(button).prop('value');
 				var ol = $("#ol-"+id).text();
 				var fl = $("#fl-"+id).text();
-				var lesson = $("#lesson").text();
+				var origin = "../manage_vocables.inc.php?name="+$("#lesson").text();
 				console.log(id);
 				//TODO: SECURITY???
-				window.location.href="change_voc.inc.php?ol="+ol+"&fl="+fl+"&lesson="+lesson+"&id="+id;
+				window.location.href="change_voc.inc.php?ol="+ol+"&fl="+fl+"&origin="+origin+"&id="+id;
 			}
 			$(document).ready(function(){
 				$('#check_all').click(function(){
@@ -62,6 +62,23 @@
 						 });
 					 }
 				 });
+
+				 $("#reset").click(function(){
+					 var r=confirm("Ausgewählte Vokabeln zurücksetzen?");
+					 if (r){
+						 var ids = [];
+						 var step = $("#choose_step").val();
+						 $("input:checkbox[id^=v-]").each(function(){
+							 if ($(this).prop("checked")){
+							 	ids.push($(this).prop("value"));
+							 }
+						 });
+						 ids_json = JSON.stringify(ids);
+						 $.post("script/reset_vocables.php", {ids: ids_json, step: step},function(data){
+							 location.reload(true);
+						 });
+					 }
+				 });
 			});
 		</script>
 		<title>Lektionen</title>
@@ -89,18 +106,36 @@
 			?>
 		</table>
 		<div class='bottom_line'>
-			<button id='delete'>Löschen</button>
-			<button id='move'>Verschieben</button><a> nach </a>
-			<select id="choose_lesson">
-				<?php
-					$db = new DatabaseConnector($_SESSION['user_id']);
-					foreach ($db->getAllLessons() as $lesson){
-						echo("<option value=".$lesson->getId()
-								.($lesson->getLastChosen()==1?" selected":"")
-								.">".$lesson->getName());
-					}
-				?>
-			</select>
+			<a>Ausgewählte:</a><br>
+			<div class='manage_box'>
+				<button id='delete'>Löschen</button>
+			</div>
+			<div class='manage_box'>
+				<button id='reset'>Zurücksetzen</button><br>
+				<a> auf Stufe </a>
+				<select id="choose_step">
+					<option value=1>1
+					<option value=2>2
+					<option value=3>3
+					<option value=4>4
+					<option value=5>5
+				</select><br>
+				<a style='font-size:60%'>Nur Vokabeln mit höherer Stufe werden zurückgesetzt.</a>
+			</div>
+			<div class='manage_box'>
+				<button id='move'>Verschieben</button><br>
+				<a> nach </a>
+				<select id="choose_lesson">
+					<?php
+						$db = new DatabaseConnector($_SESSION['user_id']);
+						foreach ($db->getAllLessons() as $lesson){
+							echo("<option value=".$lesson->getId()
+									.($lesson->getLastChosen()==1?" selected":"")
+									.">".$lesson->getName());
+						}
+					?>
+				</select>
+			</div>
 		</div>
 	</body>
 </html>
