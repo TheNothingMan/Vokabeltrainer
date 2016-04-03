@@ -9,9 +9,9 @@ class DatabaseConnector {
 		if ($_SERVER['HTTP_HOST']=="localhost"){
 			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=vokabeltrainer', 'root', '123' );
 		}else if (strpos($_SERVER['HTTP_HOST'],"skaep.lima-city.de")!==false){
-			$this->pdo = new PDO ( 'mysql:host=skaep.lima-db.de;dbname=db_337105_1', 'USER337105', 'ijXgmSe5f' );
+			$this->pdo = new PDO ( 'mysql:host=skaep.lima-db.de;dbname=db_337105_1', 'USER337105', '' );
 		}else if (strpos($_SERVER['HTTP_HOST'],"skaeppler.mygoodpage.org")!==false){
-			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=nktvnrfd_vokabeltrainer', 'nktvnrfd_admin', 'v*TL8ad_KC=4' );
+			$this->pdo = new PDO ( 'mysql:host=localhost;dbname=nktvnrfd_vokabeltrainer', 'nktvnrfd_admin', '' );
 		}else {
 			//for remote debugging and testing of localhost server from other devices
 			echo $_SERVER['HTTP_HOST'];
